@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<style type = "text/css">
+body {
+	background-color: black;
+}
+</style>
+</head>
+
+<body>
+<!-- Main HTML-->
+<form action="/change_style">
+	<input type="submit" value="Change Style">
+</form>
+<form action="/get_event">
+	<label for="filename">ROOT Filename:</label>
+	<input type="text" id="filename" name="filename" value="%file_to_read%">
+	<label for="filename">Entry Number:</label>
+	<input type="text" id="event_number" name="event_number" value="%event_to_read%">
+	<input type="submit" value="Show Event">
+</form>
+<form action="/previous_event">
+	<input type="submit" value="Previous Event">
+</form>
+<form action="/next_event">
+	<input type="submit" value="Next Event">
+</form>
+<br>
+<canvas id="transverse_canvas" width="1024" height="768" style="border:1px solid #ef1616;"></canvas>
+<br>
+<canvas id="etaphi_canvas" width="1024" height="684" style="border:1px solid #ef1616;"></canvas>
+<!-- phi from -3.1415 to 3.1415 (y) and eta from -4.7 to 4.7 (x)-->
+
+<!-- Javascript, move to a new file at some point--> 
+<script type="text/javascript">
+//temporary: set objects from file
+//var jet_list = [{eta:1.8,phi:-2.3,is_b:false}];
+//var muon_list = [{eta:-2.3,phi:0.3}];
+//var electron_list = [{eta:-1.9,phi:3.1}];
+//var photon_list = [{eta:0.2,phi:-0.4}];
+//var met = {phi:2.9};
+//second event in pico_3l_2l_TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8__RunIISummer16NanoAODv5__PUMoriond17_Nano1June2019_102X_mcRun2_asymptotic_v7_ext3-v1__130000__96F276D6-1C38-9F4F-93CE-503B860AB550.root
+//var jet_list = [{eta:-0.81,phi:0.67,is_b:false},{eta:-1.0,phi:0.0,is_b:true},{eta:-1.77,phi:0.94,is_b:true},{eta:-1.6,phi:0.50,is_b:false},{eta:-1.24,phi:-1.21,is_b:false}];
+//var muon_list = [{eta:-0.489,phi:-0.291}];
+//var electron_list = [{eta:0.295,phi:-2.958},{eta:-0.0977,phi:-3.051}];
+//var photon_list = [];
+//var met = {phi:-2.6};
