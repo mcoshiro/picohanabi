@@ -1,10 +1,11 @@
+#!/usr/bin/env python
 import socket
 import os.path
 import subprocess
 
 #GUI via web server
 hanabi_port = 125
-debug_mode = True
+debug_mode = False
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #server_socket.bind((socket.gethostname(),125)) <- use this (if ports are forwarded) to be viewable externally (not recommended, probably a security concern)
 server_socket.bind(('localhost',hanabi_port))
@@ -58,10 +59,10 @@ while True:
             if (file_to_read[-5:] == '.root'):
                 file_to_read = file_to_read[:-5]
             event_to_read = request_string.split('?')[1].split('&')[1].split('=')[1]
-            path_to_read = '/'.join(file_to_read.split('/')[:-1])
+            path_to_read = '/'.join(file_to_read.split('%2F')[:-1])
             if (path_to_read == ''):
                 path_to_read = './'
-            file_to_read = file_to_read.split('/')[-1]
+            file_to_read = file_to_read.split('%2F')[-1]
             valid_url = True
         elif (request_string == '/previous_event'):
             event_to_read = str(int(event_to_read)-1)

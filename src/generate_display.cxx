@@ -4,6 +4,9 @@
 #include <unordered_map>
 #include <fstream>
 
+#include "TFile.h"
+#include "TTree.h"
+
 int main(int argc, char** argv) {
 	if (argc != 4) {
 		std::cout << "Error: incorrect number of arguments." << std::endl;
@@ -45,54 +48,51 @@ int main(int argc, char** argv) {
 	particle_name[-24] = "W-";
 	particle_name[25] = "H";
 	//temp, manually set things
-	std::vector<float> el_eta;
-	std::vector<float> el_phi;
-	std::vector<bool> el_sig;
-	std::vector<float> mu_eta;
-	std::vector<float> mu_phi;
-	std::vector<bool> mu_sig;
-	std::vector<float> photon_eta;
-	std::vector<float> photon_phi;
-	std::vector<bool> photon_sig;
-	std::vector<float> jet_eta;
-	std::vector<float> jet_phi;
-	std::vector<float> jet_deepcsv;
-	std::vector<bool> jet_isgood;
-	float met_phi = 2.7;
-	std::vector<float> mc_eta;
-	std::vector<float> mc_phi;
-	std::vector<float> mc_id;
-	std::vector<float> mc_mom;
-	el_eta.push_back(1.2);
-	el_eta.push_back(1.3);
-	el_phi.push_back(1.2);
-	el_phi.push_back(1.3);
-	el_sig.push_back(true);
-	el_sig.push_back(false);
-	mu_eta.push_back(-2.3);
-	mu_eta.push_back(-2.0);
-	mu_phi.push_back(3.1);
-	mu_phi.push_back(2.8);
-	mu_sig.push_back(true);
-	mu_sig.push_back(true);
-	photon_eta.push_back(0.3);
-	photon_eta.push_back(1.2);
-	photon_phi.push_back(-0.5);
-	photon_phi.push_back(1.3);
-	photon_sig.push_back(true);
-	photon_sig.push_back(false);
-	jet_eta.push_back(-1.0);
-	jet_eta.push_back(1.0);
-	jet_phi.push_back(0.23);
-	jet_phi.push_back(-0.23);
-	jet_isgood.push_back(true);
-	jet_isgood.push_back(true);
-	jet_deepcsv.push_back(0.02);
-	jet_deepcsv.push_back(0.97);
-	mc_eta.push_back(1.2);
-	mc_phi.push_back(1.2);
-	mc_id.push_back(11);
-	mc_mom.push_back(-24);
+	std::vector<float> *el_eta = 0;
+	std::vector<float> *el_phi = 0;
+	std::vector<bool> *el_sig = 0;
+	std::vector<float> *mu_eta = 0;
+	std::vector<float> *mu_phi = 0;
+	std::vector<bool> *mu_sig = 0;
+	std::vector<float> *photon_eta = 0;
+	std::vector<float> *photon_phi = 0;
+	std::vector<bool> *photon_sig = 0;
+	std::vector<float> *jet_eta = 0;
+	std::vector<float> *jet_phi = 0;
+	std::vector<float> *jet_deepcsv = 0;
+	std::vector<bool> *jet_isgood = 0;
+	float met_phi = 0;
+	std::vector<float> *mc_eta = 0;
+	std::vector<float> *mc_phi = 0;
+	std::vector<int> *mc_id = 0;
+	std::vector<int> *mc_mom = 0;
+	//open file and get event
+	TFile* root_file = TFile::Open((input_file_path+"/"+input_file_name+".root").c_str());
+	TTree* event_tree = static_cast<TTree*>(root_file->Get("tree"));
+	if (std::stoi(event_number) >= event_tree->GetEntries() || std::stoi(event_number) < 0) {
+		root_file->Close();
+		std::cout << "Error: entry number out of bounds" << std::endl;
+		return 1;
+	}
+	event_tree->SetBranchAddress("el_eta",&el_eta);
+	event_tree->SetBranchAddress("el_phi",&el_phi);
+	event_tree->SetBranchAddress("el_sig",&el_sig);
+	event_tree->SetBranchAddress("mu_eta",&mu_eta);
+	event_tree->SetBranchAddress("mu_phi",&mu_phi);
+	event_tree->SetBranchAddress("mu_sig",&mu_sig);
+	event_tree->SetBranchAddress("photon_eta",&photon_eta);
+	event_tree->SetBranchAddress("photon_phi",&photon_phi);
+	event_tree->SetBranchAddress("photon_sig",&photon_sig);
+	event_tree->SetBranchAddress("jet_eta",&jet_eta);
+	event_tree->SetBranchAddress("jet_phi",&jet_phi);
+	event_tree->SetBranchAddress("jet_isgood",&jet_isgood);
+	event_tree->SetBranchAddress("jet_deepcsv",&jet_deepcsv);
+	event_tree->SetBranchAddress("mc_eta",&mc_eta);
+	event_tree->SetBranchAddress("mc_phi",&mc_phi);
+	event_tree->SetBranchAddress("mc_id",&mc_id);
+	event_tree->SetBranchAddress("mc_mom",&mc_mom);
+	event_tree->SetBranchAddress("met_phi",&met_phi);
+	event_tree->GetEvent(std::stoi(event_number));
 	//write output
 	bool first_jet = true;
 	bool first_electron = true;
@@ -102,72 +102,72 @@ int main(int argc, char** argv) {
 	std::ofstream output_file;
 	output_file.open(("data/"+input_file_name+"_"+event_number+".js").c_str());
 	output_file << "var jet_list = [";
-	for (unsigned int jet_idx = 0; jet_idx < jet_eta.size(); jet_idx++) {
-		if (jet_isgood[jet_idx]) {
+	for (unsigned int jet_idx = 0; jet_idx < jet_eta->size(); jet_idx++) {
+		if (jet_isgood->at(jet_idx)) {
 			if (first_jet)	
 				first_jet = false;
 			else 
 				output_file << ",";
-			output_file << "{eta:" << std::to_string(jet_eta[jet_idx]);
-			output_file << ",phi:" << std::to_string(jet_phi[jet_idx]);
-			if (jet_deepcsv[jet_idx] > 0.6321)
+			output_file << "{eta:" << std::to_string(jet_eta->at(jet_idx));
+			output_file << ",phi:" << std::to_string(jet_phi->at(jet_idx));
+			if (jet_deepcsv->at(jet_idx) > 0.6321)
 				output_file << ",is_b:true}";
 			else 
 				output_file << ",is_b:false}";
 		}
 	}
 	output_file << "];\nvar electron_list=[";
-	for (unsigned int el_idx = 0; el_idx < el_eta.size(); el_idx++) {
-		if (el_sig[el_idx]) {
+	for (unsigned int el_idx = 0; el_idx < el_eta->size(); el_idx++) {
+		if (el_sig->at(el_idx)) {
 			if (first_electron)	
 				first_electron = false;
 			else 
 				output_file << ",";
-			output_file << "{eta:" << std::to_string(el_eta[el_idx]);
-			output_file << ",phi:" << std::to_string(el_phi[el_idx]);
+			output_file << "{eta:" << std::to_string(el_eta->at(el_idx));
+			output_file << ",phi:" << std::to_string(el_phi->at(el_idx));
 			output_file << "}";
 		}
 	}
 	output_file << "];\nvar muon_list=[";
-	for (unsigned int mu_idx = 0; mu_idx < mu_eta.size(); mu_idx++) {
-		if (mu_sig[mu_idx]) {
+	for (unsigned int mu_idx = 0; mu_idx < mu_eta->size(); mu_idx++) {
+		if (mu_sig->at(mu_idx)) {
 			if (first_muon)	
 				first_muon = false;
 			else 
 				output_file << ",";
-			output_file << "{eta:" << std::to_string(mu_eta[mu_idx]);
-			output_file << ",phi:" << std::to_string(mu_phi[mu_idx]);
+			output_file << "{eta:" << std::to_string(mu_eta->at(mu_idx));
+			output_file << ",phi:" << std::to_string(mu_phi->at(mu_idx));
 			output_file << "}";
 		}
 	}
 	output_file << "];\nvar photon_list=[";
-	for (unsigned int photon_idx = 0; photon_idx < photon_eta.size(); photon_idx++) {
-		if (photon_sig[photon_idx]) {
+	for (unsigned int photon_idx = 0; photon_idx < photon_eta->size(); photon_idx++) {
+		if (photon_sig->at(photon_idx)) {
 			if (first_photon)	
 				first_photon = false;
 			else 
 				output_file << ",";
-			output_file << "{eta:" << std::to_string(photon_eta[photon_idx]);
-			output_file << ",phi:" << std::to_string(photon_phi[photon_idx]);
+			output_file << "{eta:" << std::to_string(photon_eta->at(photon_idx));
+			output_file << ",phi:" << std::to_string(photon_phi->at(photon_idx));
 			output_file << "}";
 		}
 	}
 	output_file << "];\nvar met = {phi:" << met_phi << "};\nvar truth_list = [";
-	for (unsigned int mc_idx = 0; mc_idx < mc_eta.size(); mc_idx++) {
+	for (unsigned int mc_idx = 0; mc_idx < mc_eta->size(); mc_idx++) {
 		if (first_truth_particle)	
 			first_truth_particle = false;
 		else 
 			output_file << ",";
-		output_file << "{eta:" << std::to_string(mc_eta[mc_idx]);
-		output_file << ",phi:" << std::to_string(mc_phi[mc_idx]);
-		if (particle_name.count(mc_id[mc_idx])>0) {
-			output_file << ",id:\"" << particle_name[mc_id[mc_idx]] << "\"";
+		output_file << "{eta:" << std::to_string(mc_eta->at(mc_idx));
+		output_file << ",phi:" << std::to_string(mc_phi->at(mc_idx));
+		if (particle_name.count(mc_id->at(mc_idx))>0) {
+			output_file << ",id:\"" << particle_name[mc_id->at(mc_idx)] << "\"";
 		}
 		else {
 			output_file << ",id:\"unknown\"";
 		}
-		if (particle_name.count(mc_mom[mc_idx])>0) {
-			output_file << ",mom:\"" << particle_name[mc_id[mc_idx]] << "\"";
+		if (particle_name.count(mc_mom->at(mc_idx))>0) {
+			output_file << ",mom:\"" << particle_name[mc_id->at(mc_idx)] << "\"";
 		}
 		else {
 			output_file << ",mom:\"unknown\"";
@@ -176,5 +176,6 @@ int main(int argc, char** argv) {
 	}
 	output_file << "];";
 	output_file.close();
+	root_file->Close();
 	return 0;
 }
