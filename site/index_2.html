@@ -1,159 +1,205 @@
 //0 black background 1 white background
-var colour_scheme = 2;
+var colour_scheme = 1;
 //make black background and circle for phi-reference
 //draw phi display
 var transverse_canvas = document.getElementById("transverse_canvas");
 var transverse_context = transverse_canvas.getContext("2d");
 if (colour_scheme === 1) {
-	transverse_context.fillStyle = "white";
+  transverse_context.fillStyle = "white";
 }
 else {
-	transverse_context.fillStyle = "black";
+  transverse_context.fillStyle = "black";
 }
 transverse_context.fillRect(0,0,1024,768);
 transverse_context.beginPath();
 if (colour_scheme === 1) {
-	transverse_context.strokeStyle = "black";
-	transverse_context.fillStyle = "black";
+  transverse_context.strokeStyle = "black";
+  transverse_context.fillStyle = "black";
 }
 else {
-	transverse_context.strokeStyle = "white";
-	transverse_context.fillStyle = "white";
+  transverse_context.strokeStyle = "white";
+  transverse_context.fillStyle = "white";
 }
 transverse_context.arc(512,384,180,0,2*Math.PI);
 transverse_context.stroke();
 transverse_context.font = "12px Arial";
-transverse_context.fillText("CMS picohanabi v 0.2",16,16);
+transverse_context.fillText("picohanabi v 0.2",16,16);
 //draw eta-phi display
 var etaphi_canvas = document.getElementById("etaphi_canvas");
 var etaphi_context = etaphi_canvas.getContext("2d");
 if (colour_scheme === 1) {
-	etaphi_context.fillStyle = "white";
+  etaphi_context.fillStyle = "white";
 }
 else {
-	etaphi_context.fillStyle = "black";
+  etaphi_context.fillStyle = "black";
 }
 etaphi_context.fillRect(0,0,1024,684);
 if (colour_scheme === 1) {
-	etaphi_context.fillStyle = "black";
+  etaphi_context.fillStyle = "black";
 }
 else {
-	etaphi_context.fillStyle = "white";
+  etaphi_context.fillStyle = "white";
 }
 etaphi_context.font = "12px Arial";
-etaphi_context.fillText("CMS picohanabi v 0.2",16,16);
+etaphi_context.fillText("picohanabi v 0.2",16,16);
 //draw ak4 jets; default color orange, green for b-tagged (medium)
 for (jet of jet_list) {
-	//draw phi display
-	if (jet.is_b === false) {
-	        transverse_context.strokeStyle = "orange";
-	}
-	else {
-		transverse_context.strokeStyle = "green";
-	}
-	transverse_context.beginPath();
-	transverse_context.moveTo(512,384);
-	transverse_context.lineTo(512+240*Math.cos(-1.0*jet.phi-0.4),384+240*Math.sin(-1.0*jet.phi-0.4));
-	transverse_context.stroke();
-	transverse_context.beginPath();
-	transverse_context.moveTo(512,384);
-	transverse_context.lineTo(512+240*Math.cos(-1.0*jet.phi+0.4),384+240*Math.sin(-1.0*jet.phi+0.4));
-	transverse_context.stroke();
-	transverse_context.beginPath();
-	transverse_context.arc(512,384,240,-1.0*jet.phi-0.4,-1.0*jet.phi+0.4);
-	transverse_context.stroke();
-	//draw eta-phi display
-	if (jet.is_b === false) {
-	        etaphi_context.strokeStyle = "orange";
-	}
-	else {
-		etaphi_context.strokeStyle = "green";
-	}
-	etaphi_context.beginPath();
-	etaphi_context.arc((jet.eta+4.7)/4.7*512,(-1.0*jet.phi+3.1415)/4.7*512,0.4/4.7*512,0,2*Math.PI);
-	etaphi_context.stroke();
+  //draw phi display
+  if (jet.is_b === false) {
+          transverse_context.strokeStyle = "orange";
+  }
+  else {
+    transverse_context.strokeStyle = "green";
+  }
+  transverse_context.beginPath();
+  transverse_context.moveTo(512,384);
+  transverse_context.lineTo(512+240*Math.cos(-1.0*jet.phi-0.4),384+240*Math.sin(-1.0*jet.phi-0.4));
+  transverse_context.stroke();
+  transverse_context.beginPath();
+  transverse_context.moveTo(512,384);
+  transverse_context.lineTo(512+240*Math.cos(-1.0*jet.phi+0.4),384+240*Math.sin(-1.0*jet.phi+0.4));
+  transverse_context.stroke();
+  transverse_context.beginPath();
+  transverse_context.arc(512,384,240,-1.0*jet.phi-0.4,-1.0*jet.phi+0.4);
+  transverse_context.stroke();
+  //draw eta-phi display
+  if (jet.is_b === false) {
+          etaphi_context.strokeStyle = "orange";
+  }
+  else {
+    etaphi_context.strokeStyle = "green";
+  }
+  etaphi_context.beginPath();
+  etaphi_context.arc((jet.eta+4.7)/4.7*512,(-1.0*jet.phi+3.1415)/4.7*512,0.4/4.7*512,0,2*Math.PI);
+  etaphi_context.stroke();
+  if (jet.hasOwnProperty("pt")) {
+    etaphi_context.font = "10px Arial";
+    etaphi_context.fillText(jet.pt.toString(),(jet.eta+4.7)/4.7*512+0.03/4.7*512,(-1.0*jet.phi+3.1415)/4.7*512);
+  }
 }
 //draw muons; default color red
 for (muon of muon_list) {
-	//draw phi display
-	transverse_context.strokeStyle = "red";
-	transverse_context.beginPath();
-	transverse_context.moveTo(512,384);
-	transverse_context.lineTo(512+240*Math.cos(-1.0*muon.phi),384+240*Math.sin(-1.0*muon.phi));
-	transverse_context.stroke();
-	//draw eta-phi display
-	etaphi_context.strokeStyle = "red";
-	etaphi_context.beginPath();
-	etaphi_context.arc((muon.eta+4.7)/4.7*512,(-1.0*muon.phi+3.1415)/4.7*512,0.05/4.7*512,0,2*Math.PI);
-	etaphi_context.stroke();
+  //draw phi display
+  transverse_context.strokeStyle = "red";
+  transverse_context.beginPath();
+  transverse_context.moveTo(512,384);
+  transverse_context.lineTo(512+240*Math.cos(-1.0*muon.phi),384+240*Math.sin(-1.0*muon.phi));
+  transverse_context.stroke();
+  //draw eta-phi display
+  etaphi_context.strokeStyle = "red";
+  etaphi_context.beginPath();
+  etaphi_context.arc((muon.eta+4.7)/4.7*512,(-1.0*muon.phi+3.1415)/4.7*512,0.05/4.7*512,0,2*Math.PI);
+  etaphi_context.stroke();
+  if (muon.hasOwnProperty("pt")) {
+    etaphi_context.font = "10px Arial";
+    etaphi_context.fillText(muon.pt.toString(),(muon.eta+4.7)/4.7*512+0.03/4.7*512,(-1.0*muon.phi+3.1415)/4.7*512);
+  }
 }
 //draw e/gammas; default color blue for electron white for photon
 for (electron of electron_list) {
-	//draw eta display
-	transverse_context.strokeStyle = "blue";
-	transverse_context.beginPath();
-	transverse_context.moveTo(512,384);
-	transverse_context.lineTo(512+240*Math.cos(-1.0*electron.phi),384+240*Math.sin(-1.0*electron.phi));
-	transverse_context.stroke();
-	//draw eta-phi display
-	etaphi_context.strokeStyle = "blue";
-	etaphi_context.beginPath();
-	etaphi_context.arc((electron.eta+4.7)/4.7*512,(-1.0*electron.phi+3.1415)/4.7*512,0.05/4.7*512,0,2*Math.PI);
-	etaphi_context.stroke();
+  //draw eta display
+  transverse_context.strokeStyle = "blue";
+  transverse_context.beginPath();
+  transverse_context.moveTo(512,384);
+  transverse_context.lineTo(512+240*Math.cos(-1.0*electron.phi),384+240*Math.sin(-1.0*electron.phi));
+  transverse_context.stroke();
+  //draw eta-phi display
+  etaphi_context.strokeStyle = "blue";
+  etaphi_context.beginPath();
+  etaphi_context.arc((electron.eta+4.7)/4.7*512,(-1.0*electron.phi+3.1415)/4.7*512,0.05/4.7*512,0,2*Math.PI);
+  etaphi_context.stroke();
+  if (electron.hasOwnProperty("pt")) {
+    etaphi_context.font = "10px Arial";
+    etaphi_context.fillText(electron.pt.toString(),(electron.eta+4.7)/4.7*512+0.03/4.7*512,(-1.0*electron.phi+3.1415)/4.7*512);
+  }
 }
+//currently doubling as isotks
 for (photon of photon_list) {
-	//draw eta display
-	if (colour_scheme === 1) {
-		transverse_context.strokeStyle = "black";
-	}
-	else {
-		transverse_context.strokeStyle = "white";
-	}
-	transverse_context.beginPath();
-	transverse_context.moveTo(512+180*Math.cos(-1.0*photon.phi),384+180*Math.sin(-1.0*photon.phi));
-	transverse_context.lineTo(512+240*Math.cos(-1.0*photon.phi),384+240*Math.sin(-1.0*photon.phi));
-	transverse_context.stroke();
-	//draw eta-phi display
-	if (colour_scheme === 1) {
-		etaphi_context.strokeStyle = "black";
-	}
-	else {
-		etaphi_context.strokeStyle = "white";
-	}
-	etaphi_context.beginPath();
-	etaphi_context.arc((photon.eta+4.7)/4.7*512,(-1.0*photon.phi+3.1415)/4.7*512,0.05/4.7*512,0,2*Math.PI);
-	etaphi_context.stroke();
+  //draw eta display
+  if (colour_scheme === 1) {
+    transverse_context.strokeStyle = "black";
+  }
+  else {
+    transverse_context.strokeStyle = "white";
+  }
+  transverse_context.beginPath();
+  transverse_context.moveTo(512+180*Math.cos(-1.0*photon.phi),384+180*Math.sin(-1.0*photon.phi));
+  transverse_context.lineTo(512+240*Math.cos(-1.0*photon.phi),384+240*Math.sin(-1.0*photon.phi));
+  transverse_context.stroke();
+  //draw eta-phi display
+  if (colour_scheme === 1) {
+    etaphi_context.strokeStyle = "black";
+  }
+  else {
+    etaphi_context.strokeStyle = "white";
+  }
+  etaphi_context.beginPath();
+  etaphi_context.arc((photon.eta+4.7)/4.7*512,(-1.0*photon.phi+3.1415)/4.7*512,0.05/4.7*512,0,2*Math.PI);
+  etaphi_context.stroke();
+  if (photon.hasOwnProperty("pt")) {
+    etaphi_context.font = "10px Arial";
+    etaphi_context.fillText(photon.pt.toString(),(photon.eta+4.7)/4.7*512+0.03/4.7*512,(-1.0*photon.phi+3.1415)/4.7*512);
+  }
 }
 for (truth_particle of truth_list) {
-	//draw eta display
-	transverse_context.strokeStyle = "violet";
-	transverse_context.fillStyle = "violet";
-	transverse_context.beginPath();
-	transverse_context.moveTo(512+240*Math.cos(-1.0*truth_particle.phi),384+240*Math.sin(-1.0*truth_particle.phi));
-	transverse_context.lineTo(512+280*Math.cos(-1.0*truth_particle.phi),384+280*Math.sin(-1.0*truth_particle.phi));
-	transverse_context.stroke();
-	transverse_context.font = "10px Arial";
-	transverse_context.fillText(truth_particle.id,512+280*Math.cos(-1.0*truth_particle.phi),379+280*Math.sin(-1.0*truth_particle.phi));
-	//draw eta-phi display
-	etaphi_context.strokeStyle = "violet";
-	etaphi_context.fillStyle = "violet";
-	etaphi_context.beginPath();
-	etaphi_context.arc((truth_particle.eta+4.7)/4.7*512,(-1.0*truth_particle.phi+3.1415)/4.7*512,0.03/4.7*512,0,2*Math.PI);
-	etaphi_context.stroke();
-	etaphi_context.font = "10px Arial";
-	etaphi_context.fillText(truth_particle.id,(truth_particle.eta+4.7)/4.7*512+0.03/4.7*512,(-1.0*truth_particle.phi+3.1415)/4.7*512);
+  if (truth_particle.id != "" && truth_particle.id != "unknown") {
+    //draw eta display
+    transverse_context.strokeStyle = "violet";
+    transverse_context.fillStyle = "violet";
+    transverse_context.beginPath();
+    transverse_context.moveTo(512+240*Math.cos(-1.0*truth_particle.phi),384+240*Math.sin(-1.0*truth_particle.phi));
+    transverse_context.lineTo(512+280*Math.cos(-1.0*truth_particle.phi),384+280*Math.sin(-1.0*truth_particle.phi));
+    transverse_context.stroke();
+    transverse_context.font = "10px Arial";
+    transverse_context.fillText(truth_particle.id,512+280*Math.cos(-1.0*truth_particle.phi),379+280*Math.sin(-1.0*truth_particle.phi));
+    //draw eta-phi display
+    etaphi_context.strokeStyle = "violet";
+    etaphi_context.fillStyle = "violet";
+    etaphi_context.beginPath();
+    etaphi_context.arc((truth_particle.eta+4.7)/4.7*512,(-1.0*truth_particle.phi+3.1415)/4.7*512,0.03/4.7*512,0,2*Math.PI);
+    etaphi_context.stroke();
+    etaphi_context.font = "10px Arial";
+    etaphi_context.fillText(truth_particle.id,(truth_particle.eta+4.7)/4.7*512+0.03/4.7*512,(-1.0*truth_particle.phi+3.1415)/4.7*512);
+  }
 }
-//draw eta display
-transverse_context.strokeStyle = "darkgray";
-transverse_context.beginPath();
-transverse_context.moveTo(512+180*Math.cos(-1.0*met.phi),384+180*Math.sin(-1.0*met.phi));
-transverse_context.lineTo(512+240*Math.cos(-1.0*met.phi),384+240*Math.sin(-1.0*met.phi));
-transverse_context.stroke();
-//draw eta-phi display
-etaphi_context.strokeStyle = "darkgray";
-etaphi_context.beginPath();
-etaphi_context.arc((4.7)/4.7*512,(-1.0*met.phi+3.1415)/4.7*512,0.05/4.7*512,0,2*Math.PI);
-etaphi_context.stroke();
+//draw eta display met
+if (met.hasOwnProperty("pt")) {
+  if (met.pt > 30) {
+    transverse_context.strokeStyle = "darkgray";
+    transverse_context.beginPath();
+    transverse_context.moveTo(512+180*Math.cos(-1.0*met.phi),384+180*Math.sin(-1.0*met.phi));
+    transverse_context.lineTo(512+240*Math.cos(-1.0*met.phi),384+240*Math.sin(-1.0*met.phi));
+    transverse_context.stroke();
+  }
+}
+else {
+  transverse_context.strokeStyle = "darkgray";
+  transverse_context.beginPath();
+  transverse_context.moveTo(512+180*Math.cos(-1.0*met.phi),384+180*Math.sin(-1.0*met.phi));
+  transverse_context.lineTo(512+240*Math.cos(-1.0*met.phi),384+240*Math.sin(-1.0*met.phi));
+  transverse_context.stroke();
+}
+//draw eta-phi display met
+if (met.hasOwnProperty("pt")) {
+  if (met.pt > 30) {
+    etaphi_context.strokeStyle = "darkgray";
+    etaphi_context.beginPath();
+    //etaphi_context.arc((4.7)/4.7*512,(-1.0*met.phi+3.1415)/4.7*512,0.05/4.7*512,0,2*Math.PI);
+    etaphi_context.moveTo((0)/4.7*512,(-1.0*met.phi+3.1415)/4.7*512);
+    etaphi_context.lineTo((2.0*4.7)/4.7*512,(-1.0*met.phi+3.1415)/4.7*512);
+    etaphi_context.stroke();
+    etaphi_context.font = "10px Arial";
+    etaphi_context.fillText(met.pt.toString(),(4.7)/4.7*512+0.03/4.7*512,(-1.0*met.phi+3.1415)/4.7*512);
+  }
+}
+else {
+  etaphi_context.strokeStyle = "darkgray";
+  etaphi_context.beginPath();
+  etaphi_context.moveTo((0)/4.7*512,(-1.0*met.phi+3.1415)/4.7*512);
+  etaphi_context.lineTo((2.0*4.7)/4.7*512,(-1.0*met.phi+3.1415)/4.7*512);
+  //etaphi_context.arc((4.7)/4.7*512,(-1.0*met.phi+3.1415)/4.7*512,0.05/4.7*512,0,2*Math.PI);
+  etaphi_context.stroke();
+}
 </script>
 </body>
 </html>
